@@ -60,7 +60,7 @@ DirDerotated=work/output_derotated
 #
 # The 25 mandatory attributes are:
 # project_id,product,mip_era,activity_id,domain_id,institution_id,driving_source_id,driving_experiment_id,driving_variant_label,source_id,version_realisation,frequency,driving_institution_id,
-# contact,creation_date,driving_experiment,Conventions,institution,tracking_id,source,source_type,variable_id,domain,native_resolution,license
+# contact,creation_date,driving_experiment,Conventions,institution,tracking_id,source,source_type,variable_id,domain,grid,license
 #
 # All other attributes are optional.
 # Entries for listed attributes are defined in section 'settings_CCLM' below; each attribute set in "global_attr_list" needs an entry/"value", otherwise the tool will stop.
@@ -77,7 +77,7 @@ DirDerotated=work/output_derotated
 # Optional arguments not included:
 # comment,history,references
 
-global_attr_list=Conventions,project_id,mip_era,activity_id,domain_id,institution_id,driving_source_id,driving_experiment_id,driving_variant_label,source_id,version_realisation,driving_institution_id,contact,driving_experiment,institution,source,source_type,domain,native_resolution,license
+global_attr_list=Conventions,project_id,mip_era,activity_id,domain_id,institution_id,driving_source_id,driving_experiment_id,driving_variant_label,source_id,version_realisation,driving_institution_id,contact,driving_experiment,institution,source,source_type,domain,grid,license
 
 #global attributes that should be taken from .nc files if present; will overwrite settings from global_attr_list!
 global_attr_file=
@@ -257,9 +257,9 @@ domain_id=EUR-12
 #domain: name of the CORDEX region https://github.com/WCRP-CORDEX/cordex-cmip6-cv/blob/main/CORDEX-CMIP6_domain_id.json
 domain=Europe
 
-#native_resolution: provides information about resolution of native model grids in km or deg or more detailed description of unstructured grids
-# e.g. 25km, 12.5km, 0.22deg, 0.11deg
-native_resolution=12.5km
+#grid: The grid global attribute can be used to describe the horizontal grid and regridding procedure
+#grid=Rotated-pole latitude-longitude with 0.11 degree grid spacing, interpolated by 2nd order conservative remapping from the original unstructured icosahedral ICON grid R13B05(~12.1km)
+grid=Rotated-pole latitude-longitude with 0.11 degree grid spacing
 
 #institution_id: usually from http://cordex.dmi.dk/joomla/images/CORDEX/RCMModelName.txt
 institution_id=CLMcom-ETH

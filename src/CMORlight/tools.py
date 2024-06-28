@@ -675,8 +675,6 @@ def process_file_fix(params,in_file):
     for name in f_in.ncattrs():
         if name in settings.global_attr_file: #only take attribute from file if in this list
             settings.Global_attributes[name] = str(f_in.getncattr(name))
-
-    settings.Global_attributes["driving_variant_label"] = 'r0i0p0f0'
     
     # out directory
     outdir = get_out_dir(var,'fx')

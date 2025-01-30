@@ -1,12 +1,10 @@
 #!/bin/bash -l
-#SBATCH --account=2022_202
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=10
-#SBATCH --time=08:00:00
-#SBATCH --output=../logs/cmorlight/master_py_%j.out
-#SBATCH --error=../logs/cmorlight/master_py_%j.err
-#SBATCH --job-name="master_py"
-#SBATCH --dependency=afterok:10107027
+#PBS -A 2022_202
+#PBS -l nodes=3:ppn=12
+#PBS -l pmem=10gb
+#PBS -l walltime=72:00:00
+#PBS -o ../logs/cmorlight/CMOR.out
+#PBS -e ../logs/cmorlight/CMOR.err
 
 source ./settings.sh
 source ./load_env.sh
@@ -15,13 +13,20 @@ script_folder="${BASEDIR}/src/CMORlight"
 python_script="${script_folder}/cmorlight.py"
 dirlog="${BASEDIR}/logs/cmorlight/master_py"
 python="python3" #python command (e.g. python or python3)
+worker='true'
 
 #necessary for derotation
 export IGNORE_ATT_COORDINATES=1
 
-START=197901 #fill in
-STOP=202401  #fill in
 
+# variables
+if [[ "${worker}" = 'true' ]]; then
+    START=$start_date
+    STOP=$end_date
+else
+    START=197901 #fill in
+    STOP=202401  #fill in
+fi
 cores=1 #number of computing cores, set to >1 with -M option
 batch=false # run several jobs simultaneously
 args=""

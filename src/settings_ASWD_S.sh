@@ -58,6 +58,6 @@ ZLEVS=(50 100 150) # list of height levels to output IF NOT set in timeseries.sh
 
 #-------------------------------------------
 # Special settings for second step
-proc_list="ATHB_S ATHU_S ATHD_S" # which variables to process (set proc_all=false for this to take effect); separated by spaces
+proc_list="ASODIR_S ASODIFD_S ASWD_S ATHB_S ATHU_S ATHD_S" # which variables to process (set proc_all=false for this to take effect); separated by spaces
 proc_all=false     # process all available variables (not only those in proc_list)
 LFILE=0             # set LFILE=1 IF ONLY primary fields (given out by COSMO) should be created and =2 for only secondary fields (additionally calculated for CORDEX); for any other number both types of fields are calculated

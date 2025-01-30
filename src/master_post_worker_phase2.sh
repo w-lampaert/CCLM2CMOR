@@ -1,14 +1,12 @@
 #!/bin/bash -l
-#SBATCH --account=2022_202
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=10
-#SBATCH --time=12:00:00
-#SBATCH --output=../logs/shell/CMOR_sh_%j.out
-#SBATCH --error=../logs/shell/CMOR_sh_%j.err
-#SBATCH --job-name=CMOR_sh
+#PBS -A 2022_202
+#PBS -l nodes=1:ppn=46
+#PBS -l walltime=12:00:00
+#PBS -o ../logs/shell/CMOR_sh_%j.out
+#PBS -e ../logs/shell/CMOR_sh_%j.err
 
 slurm_account='2022_202'
-use_worker='false'
+use_worker='true'
 source ./load_env.sh
 
 #Check if all functions are available
@@ -25,10 +23,7 @@ TIME1=$(date +%s)
 
 source ./settings.sh
 
-if [[ "${use_worker}" = 'true' ]]; then
-    START_DATE=$start_date # Start year and month for processing (if not given in command line YYYYMM)
-    STOP_DATE=$end_date  # End year and month for processing (if not given in command line YYYYMM)
-fi
+proc_list=$proc
 
 #default values
 overwrite=false #overwrite output if it exists

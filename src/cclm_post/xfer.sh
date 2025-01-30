@@ -1,6 +1,5 @@
 #!/bin/bash
 # add -l to /bin/bash (or --login) to execute commands from file /etc/profile
-#SBATCH --account=pr04
 #SBATCH --nodes=1
 #SBATCH --partition=xfer
 #SBATCH --time=4:00:00
@@ -10,7 +9,9 @@
 
 overwrite_arch=false
 args=""
-outstream='out01 out02 out03 out04 out05 out06 out07'
+outstream='out01 out02 out03 out04 out05 out06'
+
+# commandline arguments
 while [[ $# -gt 0 ]]
 do
   key="$1"
@@ -58,6 +59,10 @@ do
       overwrite_arch=true
       args="${args} --overwrite_arch"
       ;;
+      --untarred_and_packed_input)
+      untarred_and_packed_input=true
+      args="${args} --untarred_and_packed_input"
+      ;;
       *)
       echo "unknown option!"
       ;;
@@ -65,51 +70,52 @@ do
   shift
 done
 
-if [[ -z $startyear || -z $endyear || -z $OUTDIR || -z $ARCHDIR || -z $xfer || -z $SRCDIR ]]
-then
-  echo "Please provide all necessary arguments! Exiting..."
-  exit
+# check if necessary cmdline args are provided
+if [[ -z $startyear || -z $endyear || -z $OUTDIR || -z $ARCHDIR || -z $xfer || -z $SRCDIR ]]; then
+    echo "Please provide all necessary arguments! Exiting..."
+    exit
 fi
 
-if [ ! -d ${OUTDIR} ]
-then
-  mkdir -p ${OUTDIR}
-fi
 
-#skip already extracted years
-(( NEXT_YEAR=startyear + 1 ))
-while [ -d ${OUTDIR}/*${NEXT_YEAR} ] && [ ${NEXT_YEAR} -le ${endyear} ]
-do
-  echo "Input files for year ${NEXT_YEAR} have already been extracted. Skipping..."
-  (( NEXT_YEAR=NEXT_YEAR + 1 ))
+# copy/unpack raw data
+mkdir -p ${OUTDIR}
+
+all_years=($(seq $startyear $endyear))
+
+for year in "${all_years[@]}"; do
+
+    if [[ ! -d ${OUTDIR}/${startyear} ]] || [[ ${overwrite_arch} = 'true' ]]; then
+        
+	if [[ ${untarred_and_packed_input} = 'true' ]]; then
+	    echo "Copying raw data for year ${year} to  ${OUTDIR}"
+
+	    for stream in ${outstream}; do
+
+		mkdir -p ${OUTDIR}/${startyear}/output/${stream}
+	        first_file=$(ls ${ARCHDIR}/${stream} | head -n 1)
+		file_prefix="${first_file:0:4}${year}"
+
+		cp ${ARCHDIR}/${stream}/${file_prefix}* ${OUTDIR}/${startyear}/output/${stream}
+	    done
+	
+	elif [[ -d ${ARCHDIR}/*${startyear} ]]; then
+	    echo "Moving input directory for year ${startyear} to ${OUTDIR} "
+            mv ${ARCHDIR}/${startyear} ${OUTDIR}
+	
+	elif [[ -f ${ARCHDIR}/*${startyear}.tar ]]; then
+	    echo "Extracting archive for year ${startyear} to ${OUTDIR}"
+            mkdir ${OUTDIR}/${startyear}
+            mkdir ${OUTDIR}/${startyear}/output
+
+            for stream in ${outstream}; do
+                mkdir  ${OUTDIR}/${startyear}/output/${stream}
+                tar -xf ${ARCHDIR}/*${startyear}.tar -C ${OUTDIR}/${startyear}/output/${stream} --strip-components=3 output/${stream}/${startyear}
+            done
+
+	else
+	    echo "No raw input files or tar files found for year ${year} in the archive directory ${ARCHDIR}! Skipping year..."
+	fi
+    else
+        echo "Input files for year ${startyear} are already at ${OUTDIR}. Skipping..."
+    fi
 done
-
-if [ ${NEXT_YEAR} -le ${endyear} ]
-then
-  sbatch  --job-name=CMOR_sh_${GCM}_${EXP} --error=${xfer}.${NEXT_YEAR}.err --output=${xfer}.${NEXT_YEAR}.out ${SRCDIR}/xfer.sh -s ${NEXT_YEAR} ${args}
-fi
-
-if [ ! -d ${OUTDIR}/*${startyear} ] || ${overwrite_arch}
-then
-  if [ -d ${ARCHDIR}/*${startyear} ] 
-  then
-    echo "Moving input directory for year ${startyear} to ${OUTDIR} "
-    mv ${ARCHDIR}/*${startyear} ${OUTDIR}
-  elif [ -f ${ARCHDIR}/*${startyear}.tar ]
-  then
-    echo "Extracting archive for year ${startyear} to ${OUTDIR}"
-    mkdir ${OUTDIR}/${startyear}
-    mkdir ${OUTDIR}/${startyear}/output
-    for stream in ${outstream}
-    do
-	mkdir  ${OUTDIR}/${startyear}/output/${stream}
-        tar -xf ${ARCHDIR}/*${startyear}.tar -C ${OUTDIR}/${startyear}/output/${stream} --strip-components=3 output/${stream}/${startyear} 
-   done
-#    tar -xf ${ARCHDIR}/*${startyear}.tar -C ${OUTDIR}  output/out??/${startyear} 
-  else
-    echo "Cannot find .tar file or extracted archive for year ${startyear} in archive directory ${ARCHDIR}! Skipping year..."
-    exit 1
-  fi
-else
-  echo "Input files for year ${startyear} are already at ${OUTDIR}. Skipping..."
-fi

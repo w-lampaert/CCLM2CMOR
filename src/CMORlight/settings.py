@@ -52,6 +52,9 @@ def init(vartable):
     global varlist_reject
     varlist_reject =  config.get_config_value('settings', 'varlist_reject').split(',')
 
+    global rename_vars
+    rename_vars =  config.get_config_value('settings', 'rename_vars').split(',')
+
     global var_skip_list
     var_skip_list =  config.get_config_value('settings', 'var_skip_list',exitprog=False).split(',')
 
@@ -85,10 +88,10 @@ def init(vartable):
     param = {}
     with open(DirConfig+"/"+vartable,'rt') as csvfile:
         reader = csv.reader(csvfile,delimiter=';')
-        for i,row in enumerate(reader):
+        for i, row in enumerate(reader):
             if i==0: # skip header
                 continue
-            var=row[config.get_config_value('index','INDEX_VAR')]
+            var = row[config.get_config_value('index', 'INDEX_VAR')]
             if row[config.get_config_value('index','INDEX_RCM_NAME_ORG')] != '' and var != '':
                 #create dictionary entries for variables names of CORDEX as well as of the RCM
                 param[var] = row

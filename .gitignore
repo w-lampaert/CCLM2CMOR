@@ -1,0 +1,6 @@
+**/logs
+*.sh.*
+**/venv_*
+**/.worker*
+**/__pycache__
+**/worker.pbs

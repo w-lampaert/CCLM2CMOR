@@ -1,12 +1,12 @@
 #!/bin/bash -l
 #SBATCH --account=2022_202
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=10
-#SBATCH --time=08:00:00
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem-per-cpu=10G
+#SBATCH --time=24:00:00
 #SBATCH --output=../logs/cmorlight/master_py_%j.out
 #SBATCH --error=../logs/cmorlight/master_py_%j.err
 #SBATCH --job-name="master_py"
-#SBATCH --dependency=afterok:10107027
 
 source ./settings.sh
 source ./load_env.sh
@@ -19,8 +19,8 @@ python="python3" #python command (e.g. python or python3)
 #necessary for derotation
 export IGNORE_ATT_COORDINATES=1
 
-START=197901 #fill in
-STOP=202401  #fill in
+#START=$1 #fill in
+#STOP=$2  #fill in
 
 cores=1 #number of computing cores, set to >1 with -M option
 batch=false # run several jobs simultaneously

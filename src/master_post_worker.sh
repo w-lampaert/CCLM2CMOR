@@ -1,14 +1,12 @@
 #!/bin/bash -l
-#SBATCH --account=2022_202
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=10
-#SBATCH --time=12:00:00
-#SBATCH --output=../logs/shell/CMOR_sh_%j.out
-#SBATCH --error=../logs/shell/CMOR_sh_%j.err
-#SBATCH --job-name=CMOR_sh
+#PBS -A 2022_202
+#PBS -l nodes=1:ppn=46
+#PBS -l walltime=72:00:00
+#PBS -o ../logs/shell/CMOR_sh_SP_10M.out
+#PBS -e ../logs/shell/CMOR_sh_SP_10M.err
 
 slurm_account='2022_202'
-use_worker='false'
+use_worker='true'
 source ./load_env.sh
 
 #Check if all functions are available

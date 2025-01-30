@@ -66,7 +66,7 @@ def process_resolution(params,reslist,nvar,nfiles,currfile):
 
     # get cdf variable name
     var = params[config.get_config_value('index','INDEX_VAR')]
-    varRCM=params[config.get_config_value('index','INDEX_RCM_NAME')]
+    varRCM = params[config.get_config_value('index','INDEX_RCM_NAME')]
     # create path to input files from basedir,model,driving_model
     in_dir = "%s/%s" % (tools.get_input_path(),params[config.get_config_value('index','INDEX_RCM_NAME')])
     log.debug("Looking for input dir(1): %s" % (in_dir))
@@ -75,11 +75,11 @@ def process_resolution(params,reslist,nvar,nfiles,currfile):
         log.error("Input directory does not exist(0): %s \n \t Change base path in .ini file or create directory! " % in_dir)
         return nfiles,currfile
 
-    cores=config.get_config_value("integer","multi",exitprog=False)
-    multilst=[]
-    seaslst=[]
+    cores = config.get_config_value("integer", "multi", exitprog=False)
+    multilst = []
+    seaslst = []
     log.info("Used dir: %s" % (in_dir))
-    for dirpath,dirnames,filenames in os.walk(in_dir, followlinks=True):
+    for dirpath, dirnames, filenames in os.walk(in_dir, followlinks=True):
         if not nfiles:
             #estimate total 
             if config.get_config_value('boolean','limit_range'):
@@ -91,15 +91,15 @@ def process_resolution(params,reslist,nvar,nfiles,currfile):
 
         i=0
         for f in sorted(filenames):
-            if f[-3:] != ".nc":
+            if (f[-3:] != ".nc" ) and (f[-4:] != ".ncz" ):
                 continue
 
             if var not in settings.var_list_fixed:
-                year=f.split("_")[-1][:4]
+                year = f.split("_")[-1][:4]
 
 
             #use other logger
-            if cores > 1 and var not in settings.var_list_fixed :
+            if cores > 1 and var not in settings.var_list_fixed:
                 logger = logging.getLogger("cmorlight_"+year)
                 logger.info("\n###########################################################\n# Var in work: %s / %s\n###########################################################" % (var, varRCM))
                 logger.info("Start processing at: "+str(datetime.datetime.now()))
@@ -119,13 +119,13 @@ def process_resolution(params,reslist,nvar,nfiles,currfile):
                     firstlast=[1,12]
 
             else:
-                firstlast=[1,12] 
+                firstlast = [1,12] 
                     
             logger.info("\n###########################################################")
             if f.find("%s_" % var) == 0 or f.find("%s.nc" % var) == 0 or f.find("%s_" % varRCM) == 0 or f.find("%s.nc" % varRCM) == 0 or f.find("%s_" % varRCM[:varRCM.find('p')]) == 0:
                 in_file = "%s/%s" % (dirpath,f)
                 logger.log(35,"Input from: %s" % (in_file))
-                if os.access(in_file, os.R_OK) == False:
+                if not os.access(in_file, os.R_OK):
                     logger.error("Could not read file '%s', no permission!" % in_file)
                 else:
                     if var in settings.var_list_fixed:
@@ -137,7 +137,7 @@ def process_resolution(params,reslist,nvar,nfiles,currfile):
                             seaslst.append([params,year])
 
                         else:
-                            reslist=tools.process_file(params,in_file,var,reslist,year,firstlast)
+                            reslist = tools.process_file(params, in_file, var, reslist, year, firstlast)
                             if seasonal:
                                 tools.proc_seasonal(params,year)
             else:
@@ -200,7 +200,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-X", "--EXP",
                             action="store", dest="exp", default = "",
-                            help="Driving experiment (e.g. historical or rcp85)")
+                            help="Driving experiment (e.g. historical or ssp370)")
     parser.add_argument("-G", "--GCM",
                             action="store", dest="gcm", default = "",
                             help="Driving GCM")
@@ -273,7 +273,7 @@ def main():
     else:
         limit_range=False
 
-   #store parsed arguments in config
+    #store parsed arguments in config
     if options.proc_start != "":
         config.set_config_value('integer',"proc_start",options.proc_start[:4])
         if len(options.proc_start)==6:
@@ -289,20 +289,20 @@ def main():
     if options.varlist != "":
         config.set_config_value('settings','varlist',options.varlist)
     
+    
     change_driv_exp = False 
     if options.gcm != "":
-        config.set_model_value('driving_model_id',options.gcm)
+        config.set_model_value('driving_source_id',options.gcm)
         change_driv_exp = True 
     if options.ens != "":
         config.set_model_value('driving_model_ensemble_member',options.ens)
         change_driv_exp = True 
     if options.exp != "":
-        config.set_model_value('driving_experiment_name',options.exp)
-        config.set_model_value('experiment_id',options.exp)
+        config.set_model_value('driving_experiment_id',options.exp)
         change_driv_exp = True 
   
     if change_driv_exp:
-        config.set_model_value('driving_experiment',"%s, %s, %s" % (config.get_sim_value('driving_model_id'),config.get_sim_value('experiment_id'),config.get_sim_value('driving_model_ensemble_member')))        
+        config.set_model_value('driving_experiment',"%s, %s, %s" % (config.get_sim_value('driving_source_id'),config.get_sim_value('driving_experiment_id'),config.get_sim_value('driving_variant_label')))
     config.set_config_value('boolean','overwrite',options.overwrite)
     config.set_config_value('boolean','limit_range',limit_range)
     config.set_config_value('boolean','remove_src',options.remove_src)
@@ -311,18 +311,18 @@ def main():
     config.set_config_value('boolean','propagate_log',options.propagate)
 
     #Extend input path if respective option is set:
-    if config.get_config_value('boolean','extend_DirIn')==True:
-        DirIn=config.get_config_value('settings','DirIn')+'/'+ config.get_sim_value('driving_model_id')+'/'+ config.get_sim_value('driving_experiment_name')
-        config.set_config_value('settings','DirIn',DirIn)
-        DirDerotated=config.get_config_value('settings','DirDerotated')+'/'+ config.get_sim_value('driving_model_id')+'/'+ config.get_sim_value('driving_experiment_name')
+    if config.get_config_value('boolean','extend_DirIn'):
+        DirIn=config.get_config_value('settings','DirIn')+'/'+ config.get_sim_value('driving_source_id')+'/'+ config.get_sim_value('driving_experiment_id')
+        config.set_config_value('settings','DirIn',DirIn)    
+        DirDerotated=config.get_config_value('settings','DirDerotated')+'/'+ config.get_sim_value('driving_source_id')+'/'+ config.get_sim_value('driving_experiment_id')
         config.set_config_value('settings','DirDerotated',DirDerotated)
 
     # now read vartable for all variables for this RCM
-    vartable= config.get_sim_value('vartable')
+    vartable = config.get_sim_value('vartable')
     settings.init(vartable)
 
     varlist = settings.varlist
-    if options.all_vars == False:
+    if not options.all_vars:
         if varlist==[] or varlist==[''] :
             raise Exception("No variables set for processing! Set with -v or -a or in configuration file.")
     else:
@@ -353,8 +353,8 @@ def main():
         else:
             varlist = varlist_all            
     if options.reslist=="": #if output resolutions not given in command -> take from inifile
-        reslist=config.get_config_value('settings','reslist').replace(" ",",") #to allow for space as delimiter
-        reslist=list(filter(None,reslist.split(','))) #split string and remove empty strings
+        reslist = config.get_config_value('settings','reslist').replace(" ",",") #to allow for space as delimiter
+        reslist = list(filter(None,reslist.split(','))) #split string and remove empty strings
     else:
         reslist = options.reslist.split(',')
 
@@ -366,8 +366,8 @@ def main():
         print("Create logging directory: %s" % LOG_BASE)
         if not os.path.isdir(LOG_BASE):
             os.makedirs(LOG_BASE)
-    #LOG_FILENAME = os.path.join(LOG_BASE,'CMORlight.')+config.get_sim_value('driving_model_id')+"_"+config.get_sim_value('experiment_id')+"."
-    LOG_FILENAME = os.path.join(LOG_BASE,'CMORlight.')+config.get_sim_value('driving_model_id')+"_"+config.get_sim_value('experiment_id')+"_"+varlist[0]+"."
+    #LOG_FILENAME = os.path.join(LOG_BASE,'CMORlight.')+config.get_sim_value('driving_source_id')+"_"+config.get_sim_value('driving_experiment_id')+"."
+    LOG_FILENAME = os.path.join(LOG_BASE,'CMORlight.')+config.get_sim_value('driving_source_id')+"_"+config.get_sim_value('driving_experiment_id')+"_"+varlist[0]+"."    
     logext = datetime.datetime.now().strftime("%d-%m-%Y")+'.log'
 
     # get logger and assign logging filename (many loggers for multiprocessing)
@@ -404,8 +404,6 @@ def main():
     #HJP April 15th End    
 
     # if nothing is set: exit the program
-
-
     log.info("Configuration read from: %s" % os.path.abspath(vartable))
     log.info("Variable(s): %s " % varlist)
     log.info("Requested time output resolution(s): %s " % reslist)
@@ -423,8 +421,8 @@ def main():
             log.warning("Variable '%s' not supported!" % (var))
             continue
         params = settings.param[var]
-        varCMOR= params[config.get_config_value('index','INDEX_VAR')]
-        varRCM= params[config.get_config_value('index','INDEX_RCM_NAME')]
+        varCMOR = params[config.get_config_value('index','INDEX_VAR')]
+        varRCM = params[config.get_config_value('index','INDEX_RCM_NAME')]
         if (varCMOR in settings.var_skip_list) or (varRCM in settings.var_skip_list):
             log.debug("###########################################################")
             log.debug("Variable was found in var_skip_list. Skip this variables")

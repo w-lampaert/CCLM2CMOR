@@ -79,9 +79,9 @@ global_attr_list=Conventions,project_id,mip_era,activity_id,domain_id,institutio
 #global_attr_file=
 
 #list of variables to process if not specified in terminal (comma-separated, not a list)
-varlist=CLCT,TOT_PREC,AEVAP_S,ASWD_S,ATHD_S,FR_LAND,PMSL,QV_2M,TMAX_2M,HSURF,PS,RELHUM_2M,T_2M,TMIN_2M,U_10M,SP_10M,V_10
+varlist=TMIN_2M,TMAX_2M
 
-#CLCT, TOT_PREC, AEVAP_S, ASWD_S, ATHD_S
+#CLCT,TOT_PREC,AEVAP_S,ASWD_S,ATHD_S,FR_LAND,PMSL,QV_2M,TMAX_2M,HSURF,PS,RELHUM_2M,T_2M,TMIN_2M,U_10M,SP_10M,V_10
 
 #Supported output resolution : 1hr, 3hr, 6hr, day, mon, sem, fx
 #The desired output resolutions can be chosen by the option "-r". However, the "governing" setting comes from the CSV-table

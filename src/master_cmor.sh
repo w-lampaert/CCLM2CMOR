@@ -6,7 +6,6 @@
 #SBATCH --output=../logs/cmorlight/master_py_%j.out
 #SBATCH --error=../logs/cmorlight/master_py_%j.err
 #SBATCH --job-name="master_py"
-#SBATCH --dependency=afterok:10107027
 
 source ./settings.sh
 source ./load_env.sh
@@ -20,40 +19,11 @@ python="python3" #python command (e.g. python or python3)
 export IGNORE_ATT_COORDINATES=1
 
 START=197901 #fill in
-STOP=202401  #fill in
+STOP=197912  #fill in
 
 cores=1 #number of computing cores, set to >1 with -M option
 batch=false # run several jobs simultaneously
 args=""
-
-while [[ $# -gt 0 ]]
-do
-  key="$1"
-  case $key in
-       -s|--start)
-      START=$2
-      shift
-      ;;
-      -e|--end)
-      STOP=$2
-      shift
-      ;;
-      -b|--batch)
-      batch=true
-      ;;
-      -M|--multi)
-      cores=$2
-      args="$args $1 $2"
-      shift
-      ;;
-      *)
-      args="$args $1"
-      ;;
-  esac
-  shift
-done
-
-
 
 # Python script runs $cores years at once -> create one job out of $cores years
 (( START_NEW=START+cores ))
@@ -81,6 +51,3 @@ cd ${script_folder}
 echo "Starting Python script for years ${START} to ${STOP}..."
 ${python} ${python_script} ${args} -s ${START} -e ${STOP}
 echo "finished"
-
-
-

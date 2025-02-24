@@ -7,7 +7,7 @@
 #
 #-------------------------------------------------------------------------
 
-post_step=0 # to limit post processing to step 1 or 2, for all other values both steps are executed
+post_step=2 # to limit post processing to step 1 or 2, for all other values both steps are executed
 
 # Simulation details used for creating a directory structure 
 GCM=ERA5 # driving GCM
@@ -40,7 +40,7 @@ LOGDIR=${BASEDIR}/logs/shell         # logging directory
 
 # input/output directory for first step
 INDIR_BASE1=${DATADIR}/input            # directory to where the raw data archives are extracted
-OUTDIR_BASE1=${DATADIR}/work/outputpost_temp # output directory of the first step
+OUTDIR_BASE1=${DATADIR}/work/outputpost # output directory of the first step
 
 # input/output directory for second step
 INDIR_BASE2=${OUTDIR_BASE1}
@@ -58,6 +58,6 @@ ZLEVS=(50 100 150) # list of height levels to output IF NOT set in timeseries.sh
 
 #-------------------------------------------
 # Special settings for second step
-proc_list="ATHB_S ATHU_S ATHD_S" # which variables to process (set proc_all=false for this to take effect); separated by spaces
+proc_list="TMAX_2M TMIN_2M" # which variables to process (set proc_all=false for this to take effect); separated by spaces
 proc_all=false     # process all available variables (not only those in proc_list)
 LFILE=0             # set LFILE=1 IF ONLY primary fields (given out by COSMO) should be created and =2 for only secondary fields (additionally calculated for CORDEX); for any other number both types of fields are calculated

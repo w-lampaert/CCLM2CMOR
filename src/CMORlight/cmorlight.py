@@ -71,7 +71,7 @@ def process_resolution(params,reslist,nvar,nfiles,currfile):
     in_dir = "%s/%s" % (tools.get_input_path(),params[config.get_config_value('index','INDEX_RCM_NAME')])
     log.debug("Looking for input dir(1): %s" % (in_dir))
 
-    if os.path.isdir(in_dir) == False:
+    if not os.path.isdir(in_dir):
         log.error("Input directory does not exist(0): %s \n \t Change base path in .ini file or create directory! " % in_dir)
         return nfiles,currfile
 
@@ -112,11 +112,11 @@ def process_resolution(params,reslist,nvar,nfiles,currfile):
                     continue
                 #Define first and last month of file
                 if config.get_config_value('integer',"proc_start") == int(year):
-                    firstlast=[config.get_config_value('integer',"first_month"),12] 
+                    firstlast = [config.get_config_value('integer',"first_month"), 12] 
                 elif config.get_config_value('integer',"proc_end") == int(year):
-                    firstlast=[1,config.get_config_value('integer',"last_month")] 
+                    firstlast = [1,config.get_config_value('integer',"last_month")] 
                 else:
-                    firstlast=[1,12]
+                    firstlast = [1,12]
 
             else:
                 firstlast = [1,12] 
@@ -432,14 +432,14 @@ def main():
         # set global attributes in the dictionary
         tools.set_attributes(params)
         # skip fixed fields from chunking, makes no sense to chunk
-        if options.chunk_var == True and not var in settings.var_list_fixed:
+        if options.chunk_var and not var in settings.var_list_fixed:
             log.log(35, "Chunking files \n #######################")
             tools.proc_chunking(params,reslist)
         else:
             reslist_act=list(reslist) #new copy of reslist
             if (varRCM not in settings.var_list_fixed) and (varCMOR not in settings.var_list_fixed):
                 for res in reslist:
-                    if tools.check_resolution(params,res,options.process_table_only) == False:
+                    if not tools.check_resolution(params,res,options.process_table_only):
                         reslist_act.remove(res) #remove resolution from list (for this variable) if it is not in table or if it is not supported
     
             if reslist_act==[]:

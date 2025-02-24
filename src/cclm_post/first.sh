@@ -11,7 +11,6 @@ use_raw_data=$1
 eur11_domain_outdir=$2
 arch_dir=$3
 
-
 #function to process constant variables
 function constVar {
     if [[ ! -f ${OUTDIR1}/$1.nc ]] ||  ${overwrite}; then
@@ -62,7 +61,7 @@ function timeseries {  # building a time series for a given quantity
                 input_files="$(echo ${input_files}) $(ls lffd${NEXT_DATE}0100.nc )"
             fi
 	    first_day_file=${INDIR1}/${CURRDIR}/${out_dir}/lffd${CURRENT_DATE}0100.nc
-	fi
+	fi	    
 
 	out_file=${OUTDIR1}/${YYYY_MM}/${var_name}_ts.nc
 
@@ -146,8 +145,6 @@ MMint=${MM}
 if [[ $(echo ${MM} | cut -c1) -eq 0 ]]; then
   MMint=$(echo ${MMint} | cut -c2  )
 fi
-
-
 
 #################################################
 # Post-processing loop

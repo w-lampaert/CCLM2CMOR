@@ -1,13 +1,18 @@
 #!/bin/bash -l
-#PBS -A 2022_202
-#PBS -l nodes=1:ppn=46
-#PBS -l walltime=12:00:00
-#PBS -o ../logs/shell/CMOR_sh_%j.out
-#PBS -e ../logs/shell/CMOR_sh_%j.err
+#SBATCH --account=2022_202
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=10
+#SBATCH --time=12:00:00
+#SBATCH --output=../logs/shell/CMOR_sh_%j.out
+#SBATCH --error=../logs/shell/CMOR_sh_%j.err
+#SBATCH --job-name=CMOR_sh
 
 slurm_account='2022_202'
-use_worker='true'
+use_worker='false'
 source ./load_env.sh
+
+START_DATE=$1
+STOP_DATE=$2
 
 #Check if all functions are available
 funcs=('ncrcat' 'ncks' 'ncap2' 'ncatted')
@@ -23,7 +28,10 @@ TIME1=$(date +%s)
 
 source ./settings.sh
 
-proc_list=$proc
+if [[ "${use_worker}" = 'true' ]]; then
+    START_DATE=$start_date # Start year and month for processing (if not given in command line YYYYMM)
+    STOP_DATE=$end_date  # End year and month for processing (if not given in command line YYYYMM)
+fi
 
 #default values
 overwrite=false #overwrite output if it exists

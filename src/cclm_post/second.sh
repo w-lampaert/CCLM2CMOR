@@ -7,26 +7,25 @@
 # K. Keuler, Matthias Göbel 
 #latest version: 15.09.2017
 #-------------------------------------------------------------------------
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source $SCRIPT_DIR/functions.sh
 
-#typeset -Z2 MM MA ME MP MMA MME DHH EHH
-#typeset -Z4 YY YYA YYE YP
-
-
-#---------------------------------------------------------------------
 PERM=755 #Permission settings for output files
 
 #variables
 # all CCLM variables representing a time interval (min, max, average, accumulated)
-accu_list=" AEVAP_S ALHFL_BS ALHFL_PL ALHFL_S ALWD_S ALWU_S APAB_S ASHFL_S ASOB_S ASOB_T ASOD_T ASODIFD_S ASWDIFU_S ASODIR_S ATHB_S ATHD_S ATHU_S ATHB_T AUMFL_S AUSTRSSO AVDISSSO AVMFL_S AVSTRSSO DURSUN DURSUN_M DURSUN_R GRAU_GSP HAIL_GSP RAIN_CON RAIN_GSP RUNOFF_G RUNOFF_S SNOW_CON SNOW_GSP SNOW_MELT T_2M_AV TD_2M_AV TDIV_HUM TMAX_2M  TMIN_2M TOT_PREC U_10M_AV V_10M_AV VABSMX_10M VGUST_CON VGUST_DYN VMAX_10M "
+accu_list=" AEVAP_S ALHFL_BS ALHFL_PL ALHFL_S ALWD_S ALWU_S APAB_S ASHFL_S ASOB_S ASOB_T ASOD_T ASODIFD_S ASWDIFU_S ASODIR_S ATHB_S ATHD_S ATHU_S ATHB_T AUMFL_S AUSTRSSO AVDISSSO AVMFL_S AVSTRSSO DURSUN DURSUN_M DURSUN_R GRAU_GSP HAIL_GSP RAIN_CON RAIN_GSP RUNOFF_G RUNOFF_S SNOW_CON SNOW_GSP SNOW_MELT T_2M_AV TD_2M_AV TDIV_HUM TOT_PREC U_10M_AV V_10M_AV VABSMX_10M VGUST_CON VGUST_DYN VMAX_10M "
   
 #all instantaneous variables
-inst_list=" AER_BC AER_DUST AER_ORG AER_SO4 AER_SS ALB_DIF ALB_DRY ALB_RAD ALB_SAT BAS_CON BRN C_T_LK CAPE_3KM CAPE_CON CAPE_ML CAPE_MU CEILING CIN_ML CIN_MU CLC CLC_CON CLC_SGS CLCH CLCL CLCM CLCT CLCT_MOD CLDEPTH CLW_CON DBZ DBZ_850 DBZ_CMAX DD_ANAI DEPTH_LK DP_BS_LK DPSDT DQC_CON DQI_CON DQV_CON DQVDT DT_CON DT_SSO DTKE_CON DTKE_HSH DTKE_SSO DU_CON DU_SSO DV_CON DV_SSO EDR EMIS_RAD EVATRA_SUM FC FETCH_LK FF_ANAI FI FI_ANAI FIS FOR_D FOR_E FR_ICE FR_LAKE FRESHSNW GAMSO_LK H_B1_LK H_ICE H_ML_LK H_SNOW H_SNOW_M HBAS_CON HBAS_SC HHL HMO3 HORIZON HPBL HTOP_CON HTOP_DC HTOP_SC HZEROCL LAI LAI_MN LAI_MX LCL_ML LFC_ML LHFL_S LWD_S LWU_S MFLX_CON MSG_RAD MSG_RADC MSG_TB MSG_TBC O3 OMEGA P P_ANAI PABS_RAD PLCOV PLCOV_MN PLCOV_MX PMSL PMSL_ANAI POT_VORTIC PP PRG_GSP PRH_GSP PRR_CON PRR_GSP PRS_CON PRS_GSP PS Q_SEDIM QC QC_ANAI QC_RAD QCVG_CON QG QH QI QI_RAD QNCLOUD QNGRAUPEL QNHAIL QNICE QNRAIN QNSNOW QR QRS QS QV QV_2M QV_ANAI QV_S QVSFLX RCLD RELHUM RELHUM_2M RESID_WSO RHO_SNOW RHO_SNOW_M RLAT RLON ROOTDP RSMIN RSTOM SDI_1 SDI_2 SHFL_S SI SKYVIEW SLI SLO_ANG SLO_ASP SNOWLMT SOBS_RAD SOBT_RAD SOD_T SOHR_RAD SOILTYP SP_10M SSO_GAMMA SSO_SIGMA SSO_STDH SSO_THETA SWDIFD_S SWDIFU_S SWDIR_COR SWDIR_S SWISS00 SWISS12 SYNME5 SYNME6 SYNME7 SYNMSG T T_2M T_ANAI T_B1_LK T_BOT_LK T_BS_LK T_CL T_G T_ICE T_M T_MNW_LK T_S T_SNOW T_SNOW_M T_SO T_WML_LK TCH TCM TD_2M THBS_RAD THBT_RAD THHR_RAD TINC_LH TKE TKE_CON TKETENS TKVH TKVM TO3 TOP_CON TOT_PR TOTFORCE_S TQC TQC_ANAI TQG TQH TQI TQR TQS TQV TQV_ANAI TRA_SUM TWATER U U_10M UMFL_S USTR_SSO V V_10M VDIS_SSO VIO3 VMFL_S VORTIC_U VORTIC_V VORTIC_W VSTR_SSO W W_CL W_G1 W_G2 W_G3 W_I W_SNOW W_SNOW_M W_SO W_SO_ICE WLIQ_SNOW Z0 ZHD ZTD ZWD "
+inst_list=" AER_BC AER_DUST AER_ORG AER_SO4 AER_SS ALB_DIF ALB_DRY ALB_RAD ALB_SAT BAS_CON BRN C_T_LK CAPE_3KM CAPE_CON CAPE_ML CAPE_MU CEILING CIN_ML CIN_MU CLC CLC_CON CLC_SGS CLCH CLCL CLCM CLCT CLCT_MOD CLDEPTH CLW_CON DBZ DBZ_850 DBZ_CMAX DD_ANAI DEPTH_LK DP_BS_LK DPSDT DQC_CON DQI_CON DQV_CON DQVDT DT_CON DT_SSO DTKE_CON DTKE_HSH DTKE_SSO DU_CON DU_SSO DV_CON DV_SSO EDR EMIS_RAD EVATRA_SUM FC FETCH_LK FF_ANAI FI FI_ANAI FIS FOR_D FOR_E FR_ICE FR_LAKE FRESHSNW GAMSO_LK H_B1_LK H_ICE H_ML_LK H_SNOW H_SNOW_M HBAS_CON HBAS_SC HHL HMO3 HORIZON HPBL HTOP_CON HTOP_DC HTOP_SC HZEROCL LAI LAI_MN LAI_MX LCL_ML LFC_ML LHFL_S LWD_S LWU_S MFLX_CON MSG_RAD MSG_RADC MSG_TB MSG_TBC O3 OMEGA P P_ANAI PABS_RAD PLCOV PLCOV_MN PLCOV_MX PMSL PMSL_ANAI POT_VORTIC PP PRG_GSP PRH_GSP PRR_CON PRR_GSP PRS_CON PRS_GSP PS Q_SEDIM QC QC_ANAI QC_RAD QCVG_CON QG QH QI QI_RAD QNCLOUD QNGRAUPEL QNHAIL QNICE QNRAIN QNSNOW QR QRS QS QV QV_2M QV_ANAI QV_S QVSFLX RCLD RELHUM RELHUM_2M RESID_WSO RHO_SNOW RHO_SNOW_M RLAT RLON ROOTDP RSMIN RSTOM SDI_1 SDI_2 SHFL_S SI SKYVIEW SLI SLO_ANG SLO_ASP SNOWLMT SOBS_RAD SOBT_RAD SOD_T SOHR_RAD SOILTYP SSO_GAMMA SSO_SIGMA SSO_STDH SSO_THETA SWDIFD_S SWDIFU_S SWDIR_COR SWDIR_S SWISS00 SWISS12 SYNME5 SYNME6 SYNME7 SYNMSG T T_2M T_ANAI T_B1_LK T_BOT_LK T_BS_LK T_CL T_G T_ICE T_M T_MNW_LK T_S T_SNOW T_SNOW_M T_SO T_WML_LK TCH TCM TD_2M THBS_RAD THBT_RAD THHR_RAD TINC_LH TKE TKE_CON TKETENS TKVH TKVM TO3 TOP_CON TOT_PR TOTFORCE_S TQC TQC_ANAI TQG TQH TQI TQR TQS TQV TQV_ANAI TRA_SUM TWATER U U_10M UMFL_S USTR_SSO V V_10M VDIS_SSO VIO3 VMFL_S VORTIC_U VORTIC_V VORTIC_W VSTR_SSO W W_CL W_G1 W_G2 W_G3 W_I W_SNOW W_SNOW_M W_SO W_SO_ICE WLIQ_SNOW Z0 ZHD ZTD ZWD "
 
 # constant variables
 const_list=('FR_LAND' 'HSURF')
 
 #additional variables
-add_list=" SP_10M ASWD_S ASOU_T FR_SNOW RUNOFF_T PREC_CON TOT_SNOW TQW "
+add_list="SP_10M ASWD_S ASOU_T FR_SNOW RUNOFF_T PREC_CON TOT_SNOW TQW"
+
+aggregate_list="TMAX_2M TMIN_2M"
 
 #-----------------------------------------------------------------------
 
@@ -97,9 +96,9 @@ while [[ ${YY} -le ${YYE} ]]; do      # year loop
 
 
   if [[ "${proc_all}" != 'true' ]]; then 
-    FILES=${proc_list} 
+      FILES=${proc_list} 
   else
-    FILES=$(ls ${INDIR2}/${YY}_${MMA}/*_ts.nc)
+      FILES=$(ls ${INDIR2}/${YY}_${MMA}/*_ts.nc)
   fi
   
 
@@ -109,16 +108,16 @@ while [[ ${YY} -le ${YYE} ]]; do      # year loop
       FILEIN=$(basename ${FILE})
       
       if  ${proc_all}; then  
-	c2=$((${#FILEIN}-6))
-        FILEOUT=$(echo ${FILEIN} | cut -c1-${c2}) # cut off "_ts.nc"
+	  c2=$((${#FILEIN}-6))
+          FILEOUT=$(echo ${FILEIN} | cut -c1-${c2}) # cut off "_ts.nc"
       else
-        FILEOUT=${FILE} 
+          FILEOUT=${FILE} 
       fi
       
       varname=${FILEOUT} 
       
       #process variable if in proc_list or if proc_all is set
-      if [[ ${proc_list} =~ (^|[[:space:]])${varname}($|[[:space:]]) ]] || ${proc_all}; then
+      if [[ ${proc_list} =~ ${varname} ]] || ${proc_all}; then
         if ls ${OUTDIR2}/${FILEOUT}/${FILEOUT}_${YY}* 1> /dev/null 2>&1; then
           if ${overwrite}; then
             echon ""
@@ -152,17 +151,19 @@ while [[ ${YY} -le ${YYE} ]]; do      # year loop
       #MED<<
 
       # determine if current variable is an accumulated or instantaneous quantity
-      if [[ ${accu_list} =~ (^|[[:space:]])${varname}($|[[:space:]]) ]]; then
-        LACCU=1
-        echon "${varname} is accumulated variable"
-      elif [[ ${inst_list} =~ (^|[[:space:]])${varname}($|[[:space:]]) ]]; then
-        LACCU=0
-        echon "${varname} is an instantaneous variable"
-      elif [[ ${add_list} =~ (^|[[:space:]])${varname}($|[[:space:]]) ]]; then
-        continue
+      if [[ ${accu_list} =~ ${varname} ]]; then
+          LACCU=1
+          echon "${varname} is accumulated variable"
+      elif [[ ${inst_list} =~ ${varname} ]]; then
+          LACCU=0
+          echon "${varname} is an instantaneous variable"
+      elif [[ ${add_list} =~ ${varname} ]]; then
+          continue
+      elif [[ ${aggregate_list} =~ ${varname} ]]; then
+	  continue
       else
-        echo "Error for ${varname}: neither contained in accu_list nor in inst_list! Skipping..."
-        continue
+          echo "Error for ${varname}: neither contained in accu_list nor in inst_list! Skipping..."
+          continue
       fi
 
       FILELIST=""
@@ -179,8 +180,8 @@ while [[ ${YY} -le ${YYE} ]]; do      # year loop
 	fi
 
         if [[ ! -f $ts_file ]]; then
-          echo "WARNING: File ${ts_file} does not exist! Continue anyway..."
-          #continue 2
+            echo "WARNING: File ${ts_file} does not exist! Continue anyway..."
+            #continue 2
         fi
         FILELIST="$(echo ${FILELIST}) $(ls $ts_file)"
         (( MM=MM+1 ))
@@ -240,16 +241,16 @@ while [[ ${YY} -le ${YYE} ]]; do      # year loop
       # Check dates in files for accumulated variables
       # if necessary: delete first date apend first date of next year
         if [[ ${TDA} -eq 01 && ${THA} -eq 00 ]]; then
-          echov "Eliminating first time step from tmp1-File"
-          ncks -O -h -d time,1, ${FILEIN} ${FILEOUT}_tmp1_${YY}.nc
+            echov "Eliminating first time step from tmp1-File"
+            ncks -O -h -d time,1, ${FILEIN} ${FILEOUT}_tmp1_${YY}.nc
         elif [[ ${TDA} -eq 01 &&  ${THA} -eq ${DHH} ]]; then
-          echov "Number of timesteps in tmp1-File is OK"
-          cp ${FILEIN} ${FILEOUT}_tmp1_${YY}.nc
+            echov "Number of timesteps in tmp1-File is OK"
+            cp ${FILEIN} ${FILEOUT}_tmp1_${YY}.nc
         else
-          echo "Error: Start date  ${TDA} ${THA}"
-          echo in "${FILEIN} "
-          echo "is not correct! Exiting..."
-          continue
+            echo "Error: Start date  ${TDA} ${THA}"
+            echo in "${FILEIN} "
+            echo "is not correct! Exiting..."
+            continue
         fi
         if [[ ${TDE} -ge 28 && ${THE} -eq ${EHH} ]]; then
           YP=${YY}
@@ -342,87 +343,7 @@ while [[ ${YY} -le ${YYE} ]]; do      # year loop
   fi                              #concatenate part
 
 
-
-  #
-  # create additional fields required by ESGF
-  #
-  function create_add_vars {
-    name1=$1 #first input variable
-    name2=$2 #second input variable
-    name3=$3 #output variable
-    formula=$4 #formula how to create output variable
-    standard_name=$5
-    if [[ ${formula} == "add" ]]; then
-      formula="${name3}=${name1}+${name2}"
-    elif [[ ${formula} == "subs" ]]; then
-      formula="${name3}=${name1}-${name2}"
-    elif [[ ${formula} == "add_sqr" ]]; then
-      formula="${name3}=sqrt(${name1}^2+${name2}^2)"
-    #MED>>
-    elif [[ ${formula} == "snow_case" ]]; then
-      #MED: FR_SNOW=Max(0.01,Min(1.,W_SNOW/0.015))*H(x) with H(x)=1 if W_SNOW>0.5E-06, else H(x)=0
-      formula="SNOW_flg=float($name1>0.0000005);SNOW=float($name1/0.015);where(SNOW>1.0)SNOW=1.0f;where(SNOW<0.01)SNOW=0.01f;$name3=float(SNOW*SNOW_flg)"
-    #MED<<
-    else
-      echo "Formula ${formula} not known! Skipping"
-      return
-    fi
-        
-    if [[ ${proc_list} =~ (^|[[:space:]])${name3}($|[[:space:]]) ]] || ${proc_all}
-    then
-      file1=$(ls ${OUTDIR2}/${name1}/${name1}_${YY}${MMA}0100*.nc)
-      echo "finding ${file1}"
-      #MED>> file2=$(ls ${OUTDIR2}/${name2}/${name2}_${YY}${MMA}0100*.nc)
-      if [[ ${name2} == "" ]]
-      then
-        file2=""
-      else
-        file2=$(ls ${OUTDIR2}/${name2}/${name2}_${YY}${MMA}0100*.nc)
-      fi
-      #MED<<
-      echov "Input files and formula:"
-      echov "$file1"
-      echov "$file2"
-      echov "$formula"
-
-      #MED>> if [[ -f ${file1} && -f ${file2} ]] 
-      if [[ -f ${file1} ]]
-      #MED<<
-      then
-        ((c1 = ${#file1}-23 )) 
-        ((c2 = ${#file1}-3 ))
-        DATE=$(ls ${file1} |cut -c${c1}-${c2})
-        file3=${OUTDIR2}/${name3}/${name3}_${DATE}.nc
-        if [[ ! -f ${file3} ]] ||  ${overwrite}
-        then
-          echon "Create ${name3}"
-          [[ -d ${OUTDIR2}/${name3} ]] || mkdir  ${OUTDIR2}/${name3} 
-          cp ${file1} temp1_${YY}.nc
-          #MED>>
-          if [[ -f ${file2} ]]
-          then
-            ncks -h --no_abc -A -v ${name2} ${file2} temp1_${YY}.nc
-          fi
-          #MED<<
-          ncap2 -h -O -s ${formula} temp1_${YY}.nc temp1_${YY}.nc 
-          #MED>>ncks -h -a -O -v ${name3},lat,lon,rotated_pole temp1_${YY}.nc ${file3}
-          ncks -h --no_abc -O -v ${name3},lat,lon,rotated_pole temp1_${YY}.nc ${file3}
-          #MED<<
-          ncatted -h -a long_name,${name3},d,, ${file3}
-          ncatted -h -a standard_name,${name3},m,c,${standard_name} ${file3}
-          chmod ${PERM} ${file3}
-          rm temp1_${YY}.nc
-        else
-          echov "$(basename ${file3})  already exists. Use option -o to overwrite. Skipping..."
-        fi
-      else
-        echo "Input Files for generating ${name3} are not available"
-      fi
-    fi
-  }
-
-  if [[ ${LFILE} -ne 1 ]] 
-  then
+  if [[ ${LFILE} -ne 1 ]]; then
     
     echon ""
     echon " Create additional fields for CORDEX"
@@ -436,7 +357,11 @@ while [[ ${YY} -le ${YYE} ]]; do      # year loop
     # Total downward global longwave radiation at the surface:
     create_add_vars "ATHB_S" "ATHU_S" "ATHD_S" "add" "surface_downwelling_longwave_flux_in_air"
 
+    # TMAX_2M
+    aggregate_vars "T_2M" "TMIN_2M" "min" "air_temperature"
 
+    # TMIN_2M
+    aggregate_vars "T_2M" "TMAX_2M" "max" "air_temperature"
     
     # upward solar radiation at TOA: ASOU_T
     # create_add_vars "ASOD_T" "ASOB_T" "ASOU_T" "subs" "averaged_solar_upward_radiation_top" 
